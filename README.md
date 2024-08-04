@@ -299,22 +299,11 @@ resource "azurerm_sql_database" "example" {
 - [Azure Application Gateway Documentation](https://docs.microsoft.com/en-us/azure/application-gateway/)
 - [Azure SQL Database Documentation](https://docs.microsoft.com/en-us/azure/sql-database/)
 
-## Contributing
-
-Contributions to this project are welcome. Please follow these steps to contribute:
-
-1. **Fork the Repository**: Click the "Fork" button on GitHub.
-2. **Create a Branch**: Create a new branch for your changes.
-3. **Make Changes**: Implement your changes or enhancements.
-4. **Commit Changes**: Commit your changes with descriptive messages.
-5. **Push to Fork**: Push your changes to your forked repository.
-6. **Create a Pull Request**: Open a pull request to the original repository for review.
+--
 
 ## License
 
 This project is licensed under the MIT License. See the [MIT LICENSE](LICENSE) file for details.
 
----
 
-This README provides a comprehensive guide to understanding, configuring, and managing your Terraform-based Azure infrastructure project. If you have any specific requests or need additional sections, feel free to ask!
 
