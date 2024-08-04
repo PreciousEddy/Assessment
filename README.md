@@ -311,7 +311,9 @@ resource "azurerm_key_vault_secret" "sql_admin_password" {
 3. **Apply Configuration**: Run `terraform apply` to apply the configuration and provision resources.
 4. **Destroy Resources**: If needed, run `terraform destroy` to remove all resources created by this configuration.
 
-![Running](Picture/Running.png)
+<p align="center">
+  <img src="Picture/Running.png" alt="Running" />
+</p>
 
 ## Troubleshooting
 
@@ -321,7 +323,9 @@ resource "azurerm_key_vault_secret" "sql_admin_password" {
   
 ## Results:
 
-![Azure.png](Picture/Azure.png)
+<p align="center">
+  <img src="Picture/Azure.png" alt="Azure" />
+</p>
 
 ## References
 
