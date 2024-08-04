@@ -269,6 +269,41 @@ resource "azurerm_sql_database" "example" {
 }
 ```
 
+### Keyvault.tf
+   Key security aspects are handled using Azure Key Vault to manage sensitive credentials.
+
+```htm
+   resource "azurerm_key_vault" "example" {
+  name                = "example-keyvault"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+  sku_name            = "standard"
+  tenant_id           = data.azurerm_client_config.example.tenant_id
+  access_policy {
+    tenant_id = data.azurerm_client_config.example.tenant_id
+    object_id  = data.azurerm_client_config.example.object_id
+    secret_permissions = [
+      "get",
+      "list"
+    ]
+  }
+}
+
+resource "azurerm_key_vault_secret" "sql_admin_username" {
+  name         = "sql-admin-username"
+  value        = "your-sql-admin-username"
+  key_vault_id = azurerm_key_vault.example.id
+}
+
+resource "azurerm_key_vault_secret" "sql_admin_password" {
+  name         = "sql-admin-password"
+  value        = "your-sql-admin-password"
+  key_vault_id = azurerm_key_vault.example.id
+}
+
+```
+
+
 ## Deployment
 
 1. **Initialize Terraform**: Run `terraform init` to initialize the working directory.
@@ -298,6 +333,7 @@ resource "azurerm_sql_database" "example" {
 - [Azure Load Balancer Documentation](https://docs.microsoft.com/en-us/azure/load-balancer/)
 - [Azure Application Gateway Documentation](https://docs.microsoft.com/en-us/azure/application-gateway/)
 - [Azure SQL Database Documentation](https://docs.microsoft.com/en-us/azure/sql-database/)
+- [Terraform Keyvautlt Documentation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault)
 
 --
 
