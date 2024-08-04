@@ -1,7 +1,3 @@
-Here’s a detailed README for your Terraform project that covers all aspects from setup to execution and troubleshooting:
-
----
-
 # Azure Infrastructure Provisioning with Terraform
 
 ## Overview
@@ -286,7 +282,7 @@ resource "azurerm_sql_database" "example" {
 - **Authentication Issues**: Verify Azure CLI is authenticated and has the necessary permissions.
 - **Invalid Configuration**: Check for syntax errors or missing parameters in your `.tf` files.
 
-```markdown
+
 ## References
 
 - [Terraform Documentation](https://www.terraform.io/docs)
@@ -311,15 +307,9 @@ Contributions to this project are welcome. Please follow these steps to contribu
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Contact
-
-For questions or further assistance, please contact Bryan at bryan@example.com.
+This project is licensed under the MIT License. See the [MIT LICENSE](LICENSE) file for details.
 
 ---
 
 This README provides a comprehensive guide to understanding, configuring, and managing your Terraform-based Azure infrastructure project. If you have any specific requests or need additional sections, feel free to ask!
-```
 
-Feel free to adjust the specifics to match your exact configuration or preferences!
