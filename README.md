@@ -25,6 +25,8 @@ This setup ensures a scalable, secure, and highly available environment for depl
 5. **`appgateway.tf`** - Configures the Azure Application Gateway.
 6. **`sqlserver.tf`** - Defines the Azure SQL Server.
 7. **`sqldatabase.tf`** - Configures the Azure SQL Database.
+8. **`keyvault.tf`**: - Configuration of Azure Key Vault and storage of SQL Server credentials.
+
 
 ## Prerequisites
 
