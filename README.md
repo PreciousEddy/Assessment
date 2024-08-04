@@ -281,7 +281,10 @@ resource "azurerm_sql_database" "example" {
 - **Resource Not Found**: Ensure all resources are declared and correctly referenced.
 - **Authentication Issues**: Verify Azure CLI is authenticated and has the necessary permissions.
 - **Invalid Configuration**: Check for syntax errors or missing parameters in your `.tf` files.
+  
+##Results:
 
+![Azure.png](Picture/Azure.png)
 
 ## References
 
