@@ -276,13 +276,15 @@ resource "azurerm_sql_database" "example" {
 3. **Apply Configuration**: Run `terraform apply` to apply the configuration and provision resources.
 4. **Destroy Resources**: If needed, run `terraform destroy` to remove all resources created by this configuration.
 
+![Running](Picture/Running.png)
+
 ## Troubleshooting
 
 - **Resource Not Found**: Ensure all resources are declared and correctly referenced.
 - **Authentication Issues**: Verify Azure CLI is authenticated and has the necessary permissions.
 - **Invalid Configuration**: Check for syntax errors or missing parameters in your `.tf` files.
   
-##Results:
+## Results:
 
 ![Azure.png](Picture/Azure.png)
 
