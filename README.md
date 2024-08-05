@@ -343,9 +343,5 @@ resource "azurerm_key_vault_secret" "sql_admin_password" {
 
 --
 
-## License
-
-This project is licensed under the MIT License. See the [MIT LICENSE](LICENSE) file for details.
-
 
 
