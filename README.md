@@ -40,19 +40,9 @@ This setup ensures a scalable, secure, and highly available environment for depl
 
 Ensure to define necessary variables in a `terraform.tfvars` file or directly in your Terraform configuration. Examples include:
 
-```hcl
-admin_password = "your_admin_password"
-```
-
 ### Provider Configuration
 
 The provider configuration is included in `main.tf`. Ensure the Azure provider is set up correctly.
-
-```hcl
-provider "azurerm" {
-  features {}
-}
-```
 
 ## Resources Defined
 
@@ -60,251 +50,30 @@ provider "azurerm" {
 
 Defines the Azure resource group in which all resources will be created.
 
-```hcl
-resource "azurerm_resource_group" "example" {
-  name     = "example-resources"
-  location = "East US"
-}
-```
-
 ### Network Configuration
 
 - **Virtual Network**: Provides a secure, isolated network.
 - **Subnets**: Separates the network into web and database tiers.
 - **Network Security Groups**: Defines rules to control traffic flow.
 
-```hcl
-resource "azurerm_virtual_network" "example" {
-  name                = "example-vnet"
-  address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-}
-
-resource "azurerm_subnet" "web" {
-  name                 = "web-tier-subnet"
-  resource_group_name  = azurerm_resource_group.example.name
-  virtual_network_name = azurerm_virtual_network.example.name
-  address_prefixes     = ["10.0.1.0/24"]
-}
-
-resource "azurerm_network_security_group" "web" {
-  name                = "web-tier-nsg"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-
-  security_rule {
-    name                       = "Allow-HTTP"
-    priority                   = 1000
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = 80
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
-    name                       = "Allow-HTTPS"
-    priority                   = 1001
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = 443
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-}
-```
-
 ### Virtual Machines
 
 Configures VMs for both web and database tiers, ensuring availability and scaling.
-
-```hcl
-resource "azurerm_virtual_machine" "web" {
-  count               = 2
-  name                = "web-vm-${count.index}"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-  vm_size             = "Standard_D2s_v3"
-  network_interface_ids = [azurerm_network_interface.web[count.index].id]
-  availability_set_id = azurerm_availability_set.web.id
-
-  storage_os_disk {
-    name              = "web-os-disk-${count.index}"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Premium_LRS"    
-    disk_size_gb      = 128
-  }
-
-  os_profile {
-    computer_name  = "web-vm-${count.index}"
-    admin_username = "adminuser"
-    admin_password = var.admin_password
-  }
-  os_profile_windows_config {}
-}
-```
 
 ### Load Balancer
 
 Distributes traffic across VMs for high availability.
 
-```hcl
-resource "azurerm_lb" "example" {
-  name                = "example-lb"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-  sku                 = "Standard"
-
-  frontend_ip_configuration {
-    name                 = "example-fe-ip"
-    public_ip_address_id = azurerm_public_ip.lb.id
-  }
-}
-
-resource "azurerm_lb_rule" "my_lb_rule" {
-  loadbalancer_id                = azurerm_lb.example.id
-  name                           = "http-rule"
-  protocol                       = "Tcp"
-  frontend_port                  = 80
-  backend_port                   = 80
-  disable_outbound_snat          = true
-  frontend_ip_configuration_name = "example-fe-ip"
-  enable_floating_ip             = false
-  load_distribution              = "Default"
-  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.example.id]
-  probe_id                       = azurerm_lb_probe.example.id
-}
-```
-
 ### Application Gateway
 
 Provides advanced routing and load balancing.
-
-```hcl
-resource "azurerm_application_gateway" "example" {
-  name                = "example-appgateway"
-  resource_group_name = azurerm_resource_group.example.name
-  location            = azurerm_resource_group.example.location
-
-  sku {
-    name     = "Standard_v2"
-    tier     = "Standard_v2"
-    capacity = 2
-  }
-
-  gateway_ip_configuration {
-    name      = "my-gateway-ip-configuration"
-    subnet_id = azurerm_subnet.web.id
-  }
-
-  frontend_port {
-    name = local.frontend_port_name
-    port = 80
-  }
-
-  frontend_ip_configuration {
-    name                 = local.frontend_ip_configuration_name
-    public_ip_address_id = azurerm_public_ip.example.id
-  }
-
-  backend_address_pool {
-    name = local.backend_address_pool_name
-  }
-
-  backend_http_settings {
-    name                  = local.http_setting_name
-    cookie_based_affinity = "Disabled"
-    path                  = "/path1/"
-    port                  = 80
-    protocol              = "Http"
-    request_timeout       = 60
-  }
-
-  http_listener {
-    name                           = local.listener_name
-    frontend_ip_configuration_name = local.frontend_ip_configuration_name
-    frontend_port_name             = local.frontend_port_name
-    protocol                       = "Http"
-  }
-
-  request_routing_rule {
-    name                       = local.request_routing_rule_name
-    priority                   = 9
-    rule_type                  = "Basic"
-    http_listener_name         = local.listener_name
-    backend_address_pool_name  = local.backend_address_pool_name
-    backend_http_settings_name = local.http_setting_name
-  }
-}
-```
 
 ### SQL Server and Database
 
 Sets up Azure SQL Server and Database for backend data storage.
 
-```hcl
-resource "azurerm_sql_server" "example" {
-  name                = "example-sql-server"
-  resource_group_name = azurerm_resource_group.example.name
-  location            = azurerm_resource_group.example.location
-  version             = "12.0"
-  administrator_login = "sqladmin"
-  administrator_login_password = "GreenGoblin!!"
-}
-
-resource "azurerm_sql_database" "example" {
-  name                = "example-database"
-  resource_group_name = azurerm_resource_group.example.name
-  location            = azurerm_resource_group.example.location
-  server_name         = azurerm_sql_server.example.name
-  edition             = "Standard"
-  
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-```
-
 ### Keyvault.tf
    Key security aspects are handled using Azure Key Vault to manage sensitive credentials.
-
-```htm
-   resource "azurerm_key_vault" "example" {
-  name                = "example-keyvault"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-  sku_name            = "standard"
-  tenant_id           = data.azurerm_client_config.example.tenant_id
-  access_policy {
-    tenant_id = data.azurerm_client_config.example.tenant_id
-    object_id  = data.azurerm_client_config.example.object_id
-    secret_permissions = [
-      "get",
-      "list"
-    ]
-  }
-}
-
-resource "azurerm_key_vault_secret" "sql_admin_username" {
-  name         = "sql-admin-username"
-  value        = "your-sql-admin-username"
-  key_vault_id = azurerm_key_vault.example.id
-}
-
-resource "azurerm_key_vault_secret" "sql_admin_password" {
-  name         = "sql-admin-password"
-  value        = "your-sql-admin-password"
-  key_vault_id = azurerm_key_vault.example.id
-}
-
-```
-
 
 ## Deployment
 
